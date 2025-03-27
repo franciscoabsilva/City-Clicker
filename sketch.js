@@ -94,7 +94,7 @@ function setup() {
 function draw() {
   if (draw_targets && attempt < 2) {
     // The user is interacting with the 6x3 target grid
-    background(color(0, 0, 0)); // Altere aqui a cor do fundo
+    background(color(40)); // Altere aqui a cor do fundo
 
     // Print trial count at the top left-corner of the canvas
     textFont("Arial", 16);
