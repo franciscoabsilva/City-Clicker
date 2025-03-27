@@ -1,35 +1,31 @@
 // Target class (position and width)
-class Target
-{
-  constructor(x, y, w, l, id, color)
-  {
-    this.x      = x;
-    this.y      = y;
-    this.width  = w;
-    this.label  = l;
-    this.id     = id;
-    this.color  = color
+class Target {
+  constructor(x, y, w, l, id, color) {
+    this.x = x;
+    this.y = y;
+    this.width = w;
+    this.label = l;
+    this.id = id;
+    this.color = color
   }
-  
+
   // Checks if a mouse click took place
   // within the target
-  clicked(mouse_x, mouse_y)
-  {
+  clicked(mouse_x, mouse_y) {
     return dist(this.x, this.y, mouse_x, mouse_y) < this.width / 2;
   }
-  
+
   // Draws the target (i.e., a circle)
   // and its label
-  draw()
-  {
+  draw() {
     // Draw target
-    fill(this.color);                 
+    fill(this.color);
     circle(this.x, this.y, this.width);
-    
+
     // Draw label
     textFont("Arial", 10);
     textStyle(BOLD);
-    fill(color(0,0,0));
+    fill(color(0, 0, 0));
     textAlign(CENTER);
 
     // Insert line breaks after every 8 characters
@@ -42,5 +38,16 @@ class Target
     }
 
     text(formattedLabel, this.x, this.y);
+
+
+    // ISTO SERVE PARA TER AS 3 LETRAS EM CIMA DO TARGET
+    /*
+    // Draw the first three letters of the city in big text
+    let cityAbbreviation = this.label.substring(0, 3).toUpperCase();
+    textFont("Arial", 20); // Bigger font size
+    textStyle(BOLD);
+    fill(color(255)); // Red color for emphasis
+    text(cityAbbreviation, this.x, this.y - 20); // Position below the label
+    */
   }
 }

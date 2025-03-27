@@ -33,32 +33,32 @@ const GRID_ROWS = 8; // We divide our 80 targets in a 8x10 grid
 const GRID_COLUMNS = 10; // We divide our 80 targets in a 8x10 grid
 
 const colorPalette = {
-  'A': ['#FF6B6B'], // Red
-  'B': ['#4ECDC4'], // Teal
-  'C': ['#FFD166'], // Yellow
-  'D': ['#06D6A0'], // Green
-  'E': ['#118AB2'], // Blue
-  'F': ['#EF476F'], // Pink
-  'G': ['#7D5BA6'], // Purple
-  'H': ['#FF9A00'], // Orange
-  'I': ['#00B4D8'], // Light blue
-  'J': ['#9C6644'], // Brown
-  'K': ['#6A4C93'], // Deep purple
-  'L': ['#2EC4B6'], // Turquoise
-  'M': ['#E71D36'], // Bright red
-  'N': ['#FF9F1C'], // Gold
-  'O': ['#588B8B'], // Muted teal
-  'P': ['#C5AFA4'], // Beige
-  'Q': ['#355070'], // Slate blue
-  'R': ['#B56576'], // Dusty rose
-  'S': ['#F4A261'], // Peach
-  'T': ['#E56B6F'], // Coral pink
-  'U': ['#84A59D'], // Sage green
-  'V': ['#F4A261'], // Mauve
-  'W': ['#2A9D8F'], // Green-blue
-  'X': ['#E9C46A'], // Mustard
-  'Y': ['#F4A261'], // Orange (light)
-  'Z': ['#264653']  // Dark teal
+  'A': '#EF5350', // Vermelho claro
+  'B': '#FF7043', // Laranja mais claro
+  'C': '#FFB74D', // Laranja claro
+  'D': '#FFD54F', // Amarelo mais claro
+  'E': '#FFF176', // Amarelo suave
+  'F': '#DCE775', // Verde limão claro
+  'G': '#AED581', // Verde médio claro
+  'H': '#66BB6A', // Verde claro
+  'I': '#26A69A', // Verde-água claro
+  'J': '#4DD0E1', // Ciano claro
+  'K': '#29B6F6', // Azul claro
+  'L': '#42A5F5', // Azul médio claro
+  'M': '#7986CB', // Azul levemente arroxeado
+  'N': '#9575CD', // Alterado de Roxo médio para Azul arroxeado claro (S)
+  'O': '#9C4DCC', // Roxo mais claro
+  'P': '#7E57C2', // Alterado de Rosa avermelhado claro para Roxo médio (N)
+  'Q': '#F8BBD0', // Rosa pastel mais claro
+  'R': '#E57373', // Alterado de Rosa forte claro para Rosa avermelhado claro (P)
+  'S': '#EC407A', // Alterado de Azul arroxeado claro para Rosa forte claro (R)
+  'T': '#C2185B', // Vinho mais claro
+  'U': '#E53935', // Vermelho intenso claro
+  'V': '#FFA726', // Laranja queimado claro
+  'W': '#FF7043', // Laranja avermelhado claro
+  'X': '#FF5252', // Vermelho vivo claro
+  'Y': '#4CAF50', // Verde escuro claro
+  'Z': '#616161'  // Cinza médio
 };
 
 // Ensures important data is loaded before the program starts
@@ -101,6 +101,27 @@ function draw() {
     fill(color(255, 255, 255));
     textAlign(LEFT);
     text("Trial " + (current_trial + 1) + " of " + trials.length, 50, 20);
+
+    // Draw the letter aligned with the targets for that letter
+    let groupedCities = groupCitiesByLetter();
+    let letters = Object.keys(groupedCities).sort();
+
+    for (let i = 0; i < letters.length; i++) {
+      let letter = letters[i];
+      let letterColor = colorPalette[letter];
+
+      // Find the first target for this letter to align the letter
+      let firstCity = groupedCities[letter][0];
+      let target = targets.find(t => t.id === firstCity.id);
+
+      if (target) {
+      fill(color(letterColor));
+      textFont("Arial", 24);
+      textStyle(BOLD);
+      textAlign(CENTER, CENTER);
+      text(letter, target.x, target.y - 40); // Align above the first target
+      }
+    }
 
     // Draw all targets
     for (let i = 0; i < legendas.getRowCount(); i++) {
@@ -251,40 +272,30 @@ function createTargets(target_size, horizontal_gap, vertical_gap) {
   let groupedCities = groupCitiesByLetter();
   let letters = Object.keys(groupedCities).sort();
 
-  target_size = 55;
+  target_size = 48;
   const max_letters_per_row = 6;
 
   // Define the margins between targets by dividing the white space
   const h_margin = horizontal_gap / (GRID_COLUMNS - 1);
-  const v_margin = vertical_gap / (GRID_ROWS - 1);
+  const v_margin = vertical_gap / (GRID_ROWS - 1) + 30;
 
   // Set targets in a grid with boxes for each letter
   let row = 0;
   let col = 0;
+
   for (let letter of letters) {
     // Draw the box for the letter
     let box_x = 40 + (h_margin + target_size * 3.15) * col;
     let box_y = 40 + (v_margin + target_size * 3.15) * row;
 
-
-    let letterColor = color(random(255), random(255), random(255));
-    //let letterColor = colorPalette[letter];
-    // TODO TENHO A COLOR PALETTE LÁ EM CIMA, ORGANIZAR POR DEGRADÉ, POR ENQT DEIXEI ALEATÓRIO
-
-    // Draw the letter 
-    fill(letterColor);
-    textFont("Arial", 24);
-    textStyle(BOLD);
-    textAlign(CENTER, CENTER);
-    text(letter, box_x + (target_size * 3)/2, box_y - 20);
-    // TODO NAO CONSIGO DESENHAR A LETRA, QD FIZERMOS ISTO PROVAVELMENTE VAMOS TER Q DIMINUIR O TRAMANHO DOS CIRCULOS
+    let letterColor = colorPalette[letter];
 
     // Draw the cities inside the box
     let cityIndex = 0;
     for (let city of groupedCities[letter]) {
       const target_x = box_x + (target_size + 5) * (cityIndex % 3) + target_size / 2;
       const target_y = box_y + (target_size + 5) * Math.floor(cityIndex / 3) + target_size;
-      
+
       const target = new Target(target_x, target_y, target_size, city.name, city.id, letterColor);
       targets.push(target);
       cityIndex++;
