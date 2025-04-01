@@ -32,6 +32,9 @@ let targets = [];
 const GRID_ROWS = 8; // We divide our 80 targets in a 8x10 grid
 const GRID_COLUMNS = 10; // We divide our 80 targets in a 8x10 grid
 
+let hitSound;
+
+
 const colorPalette = {
   'A': '#EF5350', // Vermelho claro
   'B': '#FF7043', // Laranja mais claro
@@ -63,13 +66,15 @@ const colorPalette = {
 
 // Ensures important data is loaded before the program starts
 function preload() {
+  hitSound = loadSound('hitSound.wav');
+
   // Carrega a tabela de legendas e ordena alfabeticamente
   legendas = loadTable('legendas/G_' + GROUP_NUMBER + '.csv', 'csv', 'header', function () {
     // Ordena as linhas da tabela alfabeticamente
     legendas.rows.sort((a, b) => {
       const nameA = a.getString(1).toLowerCase(); // Coluna 1 contém os nomes dos países
       const nameB = b.getString(1).toLowerCase();
-      if (nameA < nameB) return -1;
+      if (nameA < nameA) return -1;
       if (nameA > nameB) return 1;
       return 0;
     });
@@ -204,9 +209,14 @@ function mousePressed() {
     for (let i = 0; i < legendas.getRowCount(); i++) {
       // Check if the user clicked over one of the targets
       if (targets[i].clicked(mouseX, mouseY)) {
+        if (hitSound.isPlaying()) {
+          hitSound.stop();
+        }
+
         // Checks if it was the correct target
         if (targets[i].id === trials[current_trial] + 1) {
           hits++;
+          hitSound.play();
         } else {
           misses++;
         }
@@ -272,7 +282,7 @@ function createTargets(target_size, horizontal_gap, vertical_gap) {
   let groupedCities = groupCitiesByLetter();
   let letters = Object.keys(groupedCities).sort();
 
-  target_size = 48;
+  //target_size = 48;
   const max_letters_per_row = 6;
 
   // Define the margins between targets by dividing the white space
@@ -285,16 +295,29 @@ function createTargets(target_size, horizontal_gap, vertical_gap) {
 
   for (let letter of letters) {
     // Draw the box for the letter
-    let box_x = 40 + (h_margin + target_size * 3.15) * col;
-    let box_y = 40 + (v_margin + target_size * 3.15) * row;
+    let box_x = 40 + (h_margin + target_size * 2.5) * col;
+    let box_y = 40 + (v_margin + target_size * 2.5) * row;
+
+    if (row == 0) {
+      box_y += 0.25 * PPCM; // Add margin to the left side for the first column
+    }
+
+    if (row == 1) {
+      box_y -= 0.5 * PPCM; // Add margin to the left side for the first column
+    }
+
+    // Adjust targets 2cm higher if it's the 4th row
+    if (row == 3) { // row index starts at 0, so row 4 is index 3
+      box_y -= 1 * PPCM;
+    }
 
     let letterColor = colorPalette[letter];
 
     // Draw the cities inside the box
     let cityIndex = 0;
     for (let city of groupedCities[letter]) {
-      const target_x = box_x + (target_size + 5) * (cityIndex % 3) + target_size / 2;
-      const target_y = box_y + (target_size + 5) * Math.floor(cityIndex / 3) + target_size;
+      const target_x = box_x + 20 + (target_size + 5) * (cityIndex % 3) + target_size / 2;
+      const target_y = box_y - 20 + (target_size + 5) * Math.floor(cityIndex / 3) + target_size;
 
       const target = new Target(target_x, target_y, target_size, city.name, city.id, letterColor);
       targets.push(target);
@@ -323,7 +346,7 @@ function windowResized() {
     // Below we find out out white space we can have between 2 cm targets
     let screen_width = display.width * 2.54; // screen width
     let screen_height = display.height * 2.54; // screen height
-    let target_size = 2; // sets the target size (will be converted to cm when passed to createTargets)
+    let target_size = 1.30; // sets the target size (will be converted to cm when passed to createTargets)
     let horizontal_gap = screen_width - target_size * GRID_COLUMNS; // empty space in cm across the x-axis (based on 10 targets per row)
     let vertical_gap = screen_height - target_size * GRID_ROWS; // empty space in cm across the y-axis (based on 8 targets per column)
 

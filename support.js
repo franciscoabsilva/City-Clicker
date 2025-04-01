@@ -1,6 +1,6 @@
 // Support variables & functions (DO NOT CHANGE!)
 
-let student_ID_form, display_size_form, start_button;                  // Initial input variables
+let student_ID_form, display_size_form, start_button, text_explanation;                  // Initial input variables
 let student_ID, display_size;                                          // User input parameters
 
 // Prints the initial UI that prompts that ask for student ID and screen size
@@ -38,6 +38,18 @@ function drawUserIDScreen()
   start_button = createButton('START');
   start_button.mouseReleased(startTest);
   start_button.position(width/2 - start_button.size().width/2, height/2 - start_button.size().height/2);
+
+  // 4. Text Explaining the game
+  text_explanation = createDiv("O JOGO SÓ COMEÇA QUANDO CLICAREM NO PRIMEIRO TARGET. PORFAVOR OBSERVEM O TABULEIRO ANTES DE JOGAR!");
+  text_explanation.id('main_text');
+  text_explanation.position(10, height - 200);                     // position at the bottom of the screen
+  text_explanation.size(width - 20, 100);                          // set size of the text box
+  text_explanation.style('overflow', 'hidden');                  // hide overflow
+  text_explanation.style('text-overflow', 'ellipsis');          // add ellipsis for overflow
+  text_explanation.style('color', 'red');                     // set text color to white
+  text_explanation.style('font-size', '20px');                 // set font size
+  text_explanation.style('font-family', 'Arial');              // set font family to Arial
+  text_explanation.style('text-align', 'center');             // center align text
 }
 
 // Verifies if the student ID is a number, and within an acceptable range
@@ -77,7 +89,8 @@ function startTest()
     student_ID_label.remove();
     display_size_form.remove();
     display_size_label.remove();
-    start_button.remove();  
+    start_button.remove();
+    text_explanation.remove();
 
     // Goes fullscreen and starts test
     fullscreen(!fullscreen());

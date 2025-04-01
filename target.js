@@ -23,7 +23,15 @@ class Target {
     circle(this.x, this.y, this.width);
 
     // Draw label
-    textFont("Arial", 10);
+    /*
+    ISTO FAZ DOS FONT SIZES MELHORZINHOS
+    let fontSize = Math.min(this.width / 4, 100 / this.label.length); // Adjust font size dynamically
+    textFont("Arial", fontSize);
+    if (this.label.length > 10) {
+      textFont("Arial", Math.min(this.width / 4, 220 / this.label.length)); // Adjust font size dynamically
+    }
+    */
+    textFont("Arial", 12);
     textStyle(BOLD);
     fill(color(0, 0, 0));
     textAlign(CENTER);
@@ -32,7 +40,7 @@ class Target {
     let formattedLabel = '';
     for (let i = 0; i < this.label.length; i++) {
       formattedLabel += this.label[i];
-      if ((i + 1) % 8 === 0 && i !== this.label.length - 1) {
+      if ((i + 1) % 10 === 0 && i !== this.label.length - 1) {
         formattedLabel += '\n';
       }
     }
@@ -44,7 +52,7 @@ class Target {
     /*
     // Draw the first three letters of the city in big text
     let cityAbbreviation = this.label.substring(0, 3).toUpperCase();
-    textFont("Arial", 20); // Bigger font size
+    textFont("Arial", 15); // Bigger font size
     textStyle(BOLD);
     fill(color(255)); // Red color for emphasis
     text(cityAbbreviation, this.x, this.y - 20); // Position below the label
